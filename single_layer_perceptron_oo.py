@@ -1,38 +1,55 @@
+import numpy as np
+
 class perceptron:
-    def __init__(self, l_rate, n_epoch ):
+    """ This is an implementation of the perceptron algorithm """
+    def __init__(self, l_rate, max_iter):
         self.l_rate= l_rate
-        self.n_epoch= n_epoch
+        self.max_iter= max_iter
         
-    def predict (self,weights, features_x, label_y):
-        bias = weights[0]
-        for i in len(features_x):
-            bias += weights[i + 1] * features_x[i]* label_y[i]
-            return 1.0 if bias >= 0.0 else 0.0
+    def predict(self, X):
+        # Check if predict is called during training
+        if not self.train:
+            ones = np.ones((len(X),1))
+            X = np.hstack((X, ones)) 
+            
+        return X @ self.w > 0
     
-    def fit(self, features_x, label_y):
-        weights = [0.0 for i in range(len (features_x ))]
-        for epoch in range(self.n_epoch):
+    def fit(self, X, y):
+        self.train = True
+        # Append one-vector for bias-trick.
+        ones = np.ones((len(X),1))
+        X = np.hstack((X, ones))
+        # weight vector already contains bias.
+        self.w = np.zeros(X.shape[1])
+        
+        for epoch in range(self.max_iter):
             sum_error = 0.0
             index=0
-            for row in features_x:
-                prediction = self.predict(weights, features_x, label_y)
-                error = label_y[index] - prediction
+            for row in X:
+                prediction = self.predict(row)
+                error = y[index] - prediction
                 sum_error += error**2
-                weights[0] = weights[0] + self.l_rate * error
+                self.w[0] = self.w[0] + self.l_rate * error
                 index+=1
-                for i in range(len(features_x)):
-                    weights[i + 1] = weights[i + 1] + self.l_rate * error * row[i]+ self.l_rate * error*label_y[i]
-            print('>epoch=%d, lrate=%.3f, error=%.3f' % (self.epoch, self.l_rate, sum_error))
+                for i in range(X.shape[1]):
+                    self.w[i] = self.w[i] + self.l_rate * error * row[i]+ self.l_rate * error*y[i]
+            print('>epoch=%d, lrate=%.3f, error=%.3f' % (epoch, self.l_rate, sum_error))
             
             if sum_error==0:
-                return weights
-            
-            
-        return weights
-    
-And_Operator = perceptron(0.5, 5)
-And_Operator.fit([[0, 0], [0, 1], [1, 0],[1, 1]], [0,0,0,1])
+                self.train = False
+                return 
+        
+        self.train = False
+        return 
 
-#[[0, 0, 0], [0, 1, 0], [1, 0, 0],[1, 1, 1]]
+if __name__ == "__main__": 
+    
+    model = perceptron(0.5, 10)
+
+    X = np.array([[0, 0], [0, 1], [1, 0],[1, 1]])
+    y = np.array([0,0,0,1])
+    model.fit(X,y)
+
+
 
         
