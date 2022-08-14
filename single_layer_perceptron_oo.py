@@ -1,12 +1,37 @@
 import numpy as np
 
 class perceptron:
-    """ This is an implementation of the perceptron algorithm """
+
     def __init__(self, l_rate, max_iter):
+        """
+        This is an implementation of the perceptron algorithm invented by Frank Rosenblatt in 1957.
+
+        Parameters
+        ----------
+        l_rate : float
+            DESCRIPTION.
+        max_iter : int
+            DESCRIPTION.
+
+        """
         self.l_rate= l_rate
         self.max_iter= max_iter
         
     def predict(self, X):
+        """
+        
+
+        Parameters
+        ----------
+        X : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        np.array
+            DESCRIPTION.
+
+        """
         # Check if predict is called during training
         if not self.train:
             ones = np.ones((len(X),1))
@@ -15,32 +40,51 @@ class perceptron:
         return X @ self.w > 0
     
     def fit(self, X, y):
+        """
+        
+
+        Parameters
+        ----------
+        X : TYPE
+            DESCRIPTION.
+        y : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         self.train = True
-        # Append one-vector for bias-trick.
+        # https://datascience.stackexchange.com/questions/43506/attach-1-for-the-bias-unit-in-neural-networks-what-does-it-mean
         ones = np.ones((len(X),1))
         X = np.hstack((X, ones))
+        
         # weight vector already contains bias.
         self.w = np.zeros(X.shape[1])
         
         for epoch in range(self.max_iter):
-            sum_error = 0.0
-            index=0
-            for row in X:
+            # If loss is 0 after epoch then all examples have been classified correctly.
+            loss = 0
+            for i, row in enumerate(X):
                 prediction = self.predict(row)
-                error = y[index] - prediction
-                sum_error += error**2
-                self.w[0] = self.w[0] + self.l_rate * error
-                index+=1
-                for i in range(X.shape[1]):
-                    self.w[i] = self.w[i] + self.l_rate * error * row[i]+ self.l_rate * error*y[i]
-            print('>epoch=%d, lrate=%.3f, error=%.3f' % (epoch, self.l_rate, sum_error))
+                
+                error = prediction - y[i] 
+                loss += abs(error)
+                
+                # Update weights.
+                self.w -= self.l_rate * error * row 
+                    
+            print(f"Epoch: {epoch}, Loss: {loss}")
             
-            if sum_error==0:
+            if loss==0:
                 self.train = False
                 return 
-        
+            
+        print("Maximum number of iterations reached")
         self.train = False
         return 
+
 
 if __name__ == "__main__": 
     
