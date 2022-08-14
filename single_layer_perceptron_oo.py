@@ -1,3 +1,5 @@
+#by Zeinab Herz 884503 and Lana Bou Yehia 882821
+
 import numpy as np
 
 class perceptron:
@@ -9,9 +11,9 @@ class perceptron:
         Parameters
         ----------
         l_rate : float
-            DESCRIPTION.
+            learning rate of the perceptron. Learning rate is between 0 and 1. Larger values make the weight changes more volatile
         max_iter : int
-            DESCRIPTION.
+            maximum number of iteration
 
         """
         self.l_rate= l_rate
@@ -19,12 +21,12 @@ class perceptron:
         
     def predict(self, X):
         """
-        
 
         Parameters
         ----------
-        X : TYPE
-            DESCRIPTION.
+        X : np.array
+            X is training set of s samples where
+                x is n-dimensional input vector 
 
         Returns
         -------
@@ -36,7 +38,7 @@ class perceptron:
         if not self.train:
             ones = np.ones((len(X),1))
             X = np.hstack((X, ones)) 
-            
+        # check if dot product of X and weights are greater than 0  
         return X @ self.w > 0
     
     def fit(self, X, y):
@@ -45,14 +47,16 @@ class perceptron:
 
         Parameters
         ----------
-        X : TYPE
-            DESCRIPTION.
-        y : TYPE
-            DESCRIPTION.
+        X : np.array
+             X is training set of s samples where
+                 x is n-dimensional input vector 
+        y : np.array
+            is the desired output value of the perceptron for that input.
 
         Returns
         -------
-        None.
+        prints epoch and loss
+        
 
         """
         self.train = True
@@ -77,6 +81,7 @@ class perceptron:
                     
             print(f"Epoch: {epoch}, Loss: {loss}")
             
+            # if loss is zero so that examples are correctly classified 
             if loss==0:
                 self.train = False
                 return 
