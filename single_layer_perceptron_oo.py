@@ -31,7 +31,7 @@ class perceptron:
         Returns
         -------
         np.array
-            DESCRIPTION.
+            
 
         """
         # Check if predict is called during training
@@ -93,10 +93,10 @@ class perceptron:
 
 if __name__ == "__main__": 
     
-    model = perceptron(0.5, 10)
+    model = perceptron(0.5, 20)
 
-    X = np.array([[0, 0], [0, 1], [1, 0],[1, 1]])
-    y = np.array([0,0,0,1])
+    X = np.array([[0, 0], [0, 1], [1,0], [1,1]])
+    y = np.array([0,1,1,0])
     model.fit(X,y)
 
 
