@@ -1,17 +1,18 @@
-#by Zeinab Herz 884503 and Lana Bou Yehia 882821
-
+import logging
+import time
 import numpy as np
 
 class perceptron:
 
     def __init__(self, l_rate, max_iter):
         """
-        This is an implementation of the perceptron algorithm invented by Frank Rosenblatt in 1957.
+        Implementation of the perceptron algorithm invented by Frank Rosenblatt in 1957.
 
         Parameters
         ----------
         l_rate : float
-            learning rate of the perceptron. Learning rate is between 0 and 1. Larger values make the weight changes more volatile
+            Learning rate of the perceptron. Learning rate is between 0 and 1.
+            Larger values make the weight changes more volatile
         max_iter : int
             maximum number of iteration
 
@@ -25,8 +26,7 @@ class perceptron:
         Parameters
         ----------
         X : np.array
-            X is training set of s samples where
-                x is n-dimensional input vector 
+            X is training set of s samples where x is n-dimensional input vector 
 
         Returns
         -------
@@ -43,7 +43,7 @@ class perceptron:
     
     def fit(self, X, y):
         """
-        
+        Learn weights and biases that enable the model to correctly classify samples from X.
 
         Parameters
         ----------
@@ -55,10 +55,16 @@ class perceptron:
 
         Returns
         -------
-        prints epoch and loss
+
         
 
         """
+        # Keep logs of each training run.
+        logging.basicConfig(filename="perceptron.log", format="%(message)s", level=logging.INFO)
+        t = time.localtime()
+        current_time = time.strftime("%D %H:%M", t)
+        logging.info(f"Logging training run for perceptron algorithm on {current_time}")
+        
         self.train = True
         # https://datascience.stackexchange.com/questions/43506/attach-1-for-the-bias-unit-in-neural-networks-what-does-it-mean
         ones = np.ones((len(X),1))
@@ -79,14 +85,16 @@ class perceptron:
                 # Update weights.
                 self.w -= self.l_rate * error * row 
                     
-            print(f"Epoch: {epoch}, Loss: {loss}")
+            logging.info(f"Epoch: {epoch}, Loss: {loss}")
             
             # if loss is zero so that examples are correctly classified 
             if loss==0:
                 self.train = False
+                logging.shutdown()
                 return 
             
-        print("Maximum number of iterations reached")
+        logging.info(f"Maximum number of {self.max_iter} iterations reached.\n\n")
+        logging.shutdown()
         self.train = False
         return 
 
