@@ -2,9 +2,10 @@ import logging
 import time
 import numpy as np
 
+
 class perceptron:
 
-    def __init__(self, l_rate, max_iter):
+    def __init__(self, l_rate: float, max_iter: float):
         """
         Implementation of the perceptron algorithm invented by Frank Rosenblatt in 1957.
 
@@ -17,10 +18,10 @@ class perceptron:
             maximum number of iteration
 
         """
-        self.l_rate= l_rate
-        self.max_iter= max_iter
-        
-    def predict(self, X):
+        self.l_rate = l_rate
+        self.max_iter = max_iter
+
+    def predict(self, X: np.array) -> np.array:
         """
 
         Parameters
@@ -36,12 +37,12 @@ class perceptron:
         """
         # Check if predict is called during training
         if not self.train:
-            ones = np.ones((len(X),1))
-            X = np.hstack((X, ones)) 
-        # check if dot product of X and weights are greater than 0  
+            ones = np.ones((len(X), 1))
+            X = np.hstack((X, ones))
+            # check if dot product of X and weights are greater than 0
         return X @ self.w > 0
-    
-    def fit(self, X, y):
+
+    def fit(self, X: np.array, y: np.array) -> None:
         """
         Learn weights and biases that enable the model to correctly classify samples from X.
 
@@ -55,58 +56,50 @@ class perceptron:
 
         Returns
         -------
-
-        
-
         """
         # Keep logs of each training run.
         logging.basicConfig(filename="perceptron.log", format="%(message)s", level=logging.INFO)
         t = time.localtime()
         current_time = time.strftime("%D %H:%M", t)
         logging.info(f"Logging training run for perceptron algorithm on {current_time}")
-        
+
         self.train = True
         # https://datascience.stackexchange.com/questions/43506/attach-1-for-the-bias-unit-in-neural-networks-what-does-it-mean
-        ones = np.ones((len(X),1))
+        ones = np.ones((len(X), 1))
         X = np.hstack((X, ones))
-        
+
         # weight vector already contains bias.
         self.w = np.zeros(X.shape[1])
-        
+
         for epoch in range(self.max_iter):
             # If loss is 0 after epoch then all examples have been classified correctly.
             loss = 0
             for i, row in enumerate(X):
                 prediction = self.predict(row)
-                
-                error = prediction - y[i] 
+
+                error = prediction - y[i]
                 loss += abs(error)
-                
+
                 # Update weights.
-                self.w -= self.l_rate * error * row 
-                    
+                self.w -= self.l_rate * error * row
+
             logging.info(f"Epoch: {epoch}, Loss: {loss}")
-            
+
             # if loss is zero so that examples are correctly classified 
-            if loss==0:
+            if loss == 0:
                 self.train = False
                 logging.shutdown()
-                return 
-            
+                return
+
         logging.info(f"Maximum number of {self.max_iter} iterations reached.\n\n")
         logging.shutdown()
         self.train = False
-        return 
+        return
 
 
-if __name__ == "__main__": 
-    
+if __name__ == "__main__":
     model = perceptron(0.5, 20)
 
-    X = np.array([[0, 0], [0, 1], [1,0], [1,1]])
-    y = np.array([0,1,1,0])
-    model.fit(X,y)
-
-
-
-        
+    X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+    y = np.array([0, 1, 1, 0])
+    model.fit(X, y)
