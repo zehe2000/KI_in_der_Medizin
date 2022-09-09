@@ -1,14 +1,15 @@
+"""This module implements the perceptron algorithm invented by Frank Rosenblatt in
+1957."""
 import logging
 import time
 import numpy as np
 
 
-class perceptron:
-
+class Perceptron:
+    """ Implementation of the perceptron algorithm invented by Frank Rosenblatt in
+    1957. """
     def __init__(self, l_rate: float, max_iter: int):
         """
-        Implementation of the perceptron algorithm invented by Frank Rosenblatt in 1957.
-
         Parameters
         ----------
         l_rate : float
@@ -20,6 +21,8 @@ class perceptron:
         """
         self.l_rate = l_rate
         self.max_iter = max_iter
+        self.train = True
+        self.w = None
 
     def predict(self, X: np.array) -> np.array:
         """
@@ -49,8 +52,7 @@ class perceptron:
         Parameters
         ----------
         X : np.array
-             X is training set of s samples where
-                 x is n-dimensional input vector 
+             X is training set of s samples where x is n-dimensional input vector
         y : np.array
             is the desired output value of the perceptron for that input.
 
@@ -58,12 +60,14 @@ class perceptron:
         -------
         """
         # Keep logs of each training run.
-        logging.basicConfig(filename="perceptron.log", format="%(message)s", level=logging.INFO)
+        logging.basicConfig(
+            filename="perceptron.log", format="%(message)s", level=logging.INFO
+        )
         t = time.localtime()
         current_time = time.strftime("%D %H:%M", t)
         logging.info(f"Logging training run for perceptron algorithm on {current_time}")
 
-        self.train = True
+
         # https://datascience.stackexchange.com/questions/43506/attach-1-for-the-bias-unit-in-neural-networks-what-does-it-mean
         ones = np.ones((len(X), 1))
         X = np.hstack((X, ones))
@@ -85,7 +89,7 @@ class perceptron:
 
             logging.info(f"Epoch: {epoch}, Loss: {loss}")
 
-            # if loss is zero so that examples are correctly classified 
+            # if loss is zero so that examples are correctly classified
             if loss == 0:
                 self.train = False
                 logging.shutdown()
@@ -98,7 +102,7 @@ class perceptron:
 
 
 if __name__ == "__main__":
-    model = perceptron(0.5, 20)
+    model = Perceptron(0.5, 20)
 
     X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
     y = np.array([0, 1, 1, 0])
